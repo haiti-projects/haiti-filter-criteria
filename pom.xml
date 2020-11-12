@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sadtech.haiti</groupId>
+        <artifactId>haiti</artifactId>
+        <version>0.0.1-RELEASE</version>
+    </parent>
+
+    <artifactId>criteria-filter</artifactId>
+    <version>0.0.1-RELEASE</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sadtech.haiti</groupId>
+            <artifactId>haiti-filter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <developers>
+        <developer>
+            <id>uPagge</id>
+            <name>Struchkov Mark</name>
+            <email>upagge@ya.ru</email>
+            <organization>SADTECH</organization>
+            <url>https://uPagge.sadtech.org</url>
+        </developer>
+    </developers>
+
+</project>
