@@ -91,7 +91,9 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public <Q> Q build() {
-        return (Q) specifications;
+        return (Q) specifications.stream()
+                .map(Container::getSpecification)
+                .collect(Collectors.toList());
     }
 
     public static <E> CriteriaQuery<E> empty() {
