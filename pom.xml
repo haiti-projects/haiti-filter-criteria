@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.sadtech.haiti</groupId>
         <artifactId>haiti</artifactId>
-        <version>0.0.1-RELEASE</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <groupId>org.sadtech.haiti.filter</groupId>
     <artifactId>haiti-filter-criteria</artifactId>
-    <version>0.0.2-RELEASE</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <name>Haiti Filter Criteria</name>
     <description>Fast creation of filtering requests using the Criteria Api wrapper.</description>
@@ -81,6 +81,11 @@
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.29.Final</version>
         </dependency>
     </dependencies>
 

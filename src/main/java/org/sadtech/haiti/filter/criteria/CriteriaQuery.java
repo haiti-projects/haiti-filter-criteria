@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.sadtech.haiti.filter.FilterQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,8 +15,8 @@ import java.util.stream.Collectors;
 public class CriteriaQuery<T> implements FilterQuery {
 
     private static final CriteriaQuery<?> EMPTY = new CriteriaQuery<>(new ArrayList<>());
-    private final List<Container<T>> specifications;
-    private String joinTable;
+    private final List<Container<T>> containers;
+    private List<JoinTable> joinTables = new ArrayList<>();
     private final SimpleCriteriaQuery<T> simpleCriteriaQuery = new SimpleCriteriaQuery();
 
     public static <T> FilterQuery create() {
@@ -28,15 +29,38 @@ public class CriteriaQuery<T> implements FilterQuery {
      *
      * @param fieldName Имя поля сущности, которое отвечает за название таблицы.
      */
-    public CriteriaQuery<T> join(@NonNull String fieldName) {
-        joinTable = fieldName;
+    public CriteriaQuery<T> join(@NonNull String... fieldName) {
+        joinTables = Arrays.stream(fieldName)
+                .map(JoinTable::of)
+                .collect(Collectors.toList());
+        return this;
+    }
+
+    public CriteriaQuery<T> join(@NonNull JoinTable... joinTables) {
+        this.joinTables = Arrays.stream(joinTables).collect(Collectors.toList());
         return this;
     }
 
     @Override
     public <Y extends Comparable<? super Y>> FilterQuery between(@NonNull String field, Y from, Y to) {
         if (from != null && to != null) {
-            specifications.add(simpleCriteriaQuery.between(joinTable, field, from, to));
+            containers.add(simpleCriteriaQuery.between(joinTables, field, from, to));
+        }
+        return this;
+    }
+
+    @Override
+    public <Y extends Comparable<? super Y>> FilterQuery greaterThan(@NonNull String field, Y value) {
+        if (value != null) {
+            containers.add(simpleCriteriaQuery.greaterThan(joinTables, field, value));
+        }
+        return this;
+    }
+
+    @Override
+    public <Y extends Comparable<? super Y>> FilterQuery lessThan(@NonNull String field, Y value) {
+        if (value != null) {
+            containers.add(simpleCriteriaQuery.lessThan(joinTables, field, value));
         }
         return this;
     }
@@ -44,7 +68,7 @@ public class CriteriaQuery<T> implements FilterQuery {
     @Override
     public FilterQuery matchPhrase(@NonNull String field, Object value) {
         if (value != null) {
-            specifications.add(simpleCriteriaQuery.matchPhrase(joinTable, field, value));
+            containers.add(simpleCriteriaQuery.matchPhrase(joinTables, field, value));
         }
         return this;
     }
@@ -52,9 +76,20 @@ public class CriteriaQuery<T> implements FilterQuery {
     @Override
     public <U> FilterQuery matchPhrase(@NonNull String field, Set<U> values) {
         if (values != null && !values.isEmpty()) {
-            specifications.addAll(
+            containers.addAll(
                     values.stream()
-                            .map(value -> simpleCriteriaQuery.matchPhrase(joinTable, field, value))
+                            .map(value -> simpleCriteriaQuery.matchPhrase(joinTables, field, value))
+                            .collect(Collectors.toList())
+            );
+        }
+        return this;
+    }
+
+    public <U extends List<U>> CriteriaQuery<T> collectionElementsIn(List<U> values) {
+        if (values != null && !values.isEmpty()) {
+            containers.addAll(
+                    values.stream()
+                            .map(value -> simpleCriteriaQuery.collectionElements(joinTables, value))
                             .collect(Collectors.toList())
             );
         }
@@ -64,17 +99,17 @@ public class CriteriaQuery<T> implements FilterQuery {
     @Override
     public FilterQuery exists(String field) {
         if (field != null) {
-            specifications.add(simpleCriteriaQuery.exists(joinTable, field));
+            containers.add(simpleCriteriaQuery.exists(joinTables, field));
         }
         return this;
     }
 
     @Override
     public FilterQuery like(@NonNull String field, String value, boolean ignoreCase) {
-        specifications.add(
+        containers.add(
                 ignoreCase
-                        ? simpleCriteriaQuery.likeIgnoreCase(joinTable, field, value)
-                        : simpleCriteriaQuery.like(joinTable, field, value)
+                        ? simpleCriteriaQuery.likeIgnoreCase(joinTables, field, value)
+                        : simpleCriteriaQuery.like(joinTables, field, value)
         );
         return this;
     }
@@ -82,8 +117,8 @@ public class CriteriaQuery<T> implements FilterQuery {
     @Override
     public FilterQuery checkBoolInt(@NonNull String field, Boolean flag) {
         if (flag != null) {
-            specifications.add(
-                    simpleCriteriaQuery.between(joinTable, field, 0, Integer.MAX_VALUE)
+            containers.add(
+                    simpleCriteriaQuery.between(joinTables, field, 0, Integer.MAX_VALUE)
             );
         }
         return this;
@@ -91,7 +126,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public <Q> Q build() {
-        return (Q) specifications.stream()
+        return (Q) containers.stream()
                 .map(Container::getSpecification)
                 .collect(Collectors.toList());
     }
