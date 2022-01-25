@@ -1,8 +1,5 @@
-package org.sadtech.haiti.filter.criteria;
+package dev.struchkov.haiti.filter.criteria;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -13,9 +10,6 @@ import java.util.UUID;
  *
  * @author upagge 09.11.2020
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class Container<T> {
 
     private final String uuid = UUID.randomUUID().toString();
@@ -29,6 +23,26 @@ public class Container<T> {
 
     public static <T> Container<T> of(List<JoinTable> joinTables) {
         return new Container<>(joinTables);
+    }
+
+    public List<JoinTable> getJoinTables() {
+        return joinTables;
+    }
+
+    public void setJoinTables(List<JoinTable> joinTables) {
+        this.joinTables = joinTables;
+    }
+
+    public Specification<T> getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(Specification<T> specification) {
+        this.specification = specification;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
 }

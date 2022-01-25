@@ -1,23 +1,24 @@
-package org.sadtech.haiti.filter.criteria;
+package dev.struchkov.haiti.filter.criteria;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.sadtech.haiti.filter.Filter;
-import org.sadtech.haiti.filter.FilterQuery;
+import dev.struchkov.haiti.filter.Filter;
+import dev.struchkov.haiti.filter.FilterQuery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CriteriaFilter<T> implements Filter {
 
     private final List<Specification<T>> andSpecifications = new ArrayList<>();
     private final List<Specification<T>> orSpecifications = new ArrayList<>();
     private final List<Specification<T>> notSpecifications = new ArrayList<>();
+
+    private CriteriaFilter() {
+    }
 
     public static <T> Filter create() {
         return new CriteriaFilter<T>();
@@ -30,8 +31,24 @@ public class CriteriaFilter<T> implements Filter {
     }
 
     @Override
+    public Filter and(Consumer<FilterQuery> query) {
+        final FilterQuery criteriaQuery = CriteriaQuery.create();
+        query.accept(criteriaQuery);
+        andSpecifications.addAll(getSpecification(criteriaQuery));
+        return this;
+    }
+
+    @Override
     public Filter or(FilterQuery filterQuery) {
         orSpecifications.addAll(getSpecification(filterQuery));
+        return this;
+    }
+
+    @Override
+    public Filter or(Consumer<FilterQuery> query) {
+        final FilterQuery criteriaQuery = CriteriaQuery.create();
+        query.accept(criteriaQuery);
+        orSpecifications.addAll(getSpecification(criteriaQuery));
         return this;
     }
 
@@ -40,7 +57,19 @@ public class CriteriaFilter<T> implements Filter {
         notSpecifications.addAll(
                 getSpecification(filterQuery).stream()
                         .map(Specification::not)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toUnmodifiableList())
+        );
+        return this;
+    }
+
+    @Override
+    public Filter not(Consumer<FilterQuery> query) {
+        final FilterQuery criteriaQuery = CriteriaQuery.create();
+        query.accept(criteriaQuery);
+        notSpecifications.addAll(
+                getSpecification(criteriaQuery).stream()
+                        .map(Specification::not)
+                        .collect(Collectors.toUnmodifiableList())
         );
         return this;
     }

@@ -1,6 +1,6 @@
-package org.sadtech.haiti.filter.criteria;
+package dev.struchkov.haiti.filter.criteria;
 
-import lombok.NonNull;
+import dev.struchkov.haiti.utils.Assert;
 import org.hibernate.query.criteria.internal.path.PluralAttributeJoinSupport;
 
 import javax.persistence.criteria.From;
@@ -15,13 +15,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static dev.struchkov.haiti.utils.Assert.Utils.nullPointer;
+
 public class SimpleCriteriaQuery<T> {
+
+    public static final String FIELD = "field";
 
     private From<Object, Object> lastJoin;
     private final Set<String> unique = new HashSet<>();
     private final Map<String, From<Object, Object>> joinMap = new HashMap<>();
 
-    public Container<T> matchPhrase(List<JoinTable> joinTables, @NonNull String field, @NonNull Object value) {
+    public Container<T> matchPhrase(List<JoinTable> joinTables, String field, Object value) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+        Assert.isNotNull(value, nullPointer("value"));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.equal(getPath(root, container).get(field), value));
         return container;
@@ -38,37 +45,49 @@ public class SimpleCriteriaQuery<T> {
         return container;
     }
 
-    public Container<T> exists(List<JoinTable> joinTables, @NonNull String field) {
+    public Container<T> exists(List<JoinTable> joinTables, String field) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.isNotNull(getPath(root, container).get(field)));
         return container;
     }
 
-    public Container<T> likeIgnoreCase(List<JoinTable> joinTables, @NonNull String field, String value) {
+    public Container<T> likeIgnoreCase(List<JoinTable> joinTables, String field, String value) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.like(cb.lower(getPath(root, container).get(field)), value));
         return container;
     }
 
-    public Container<T> like(List<JoinTable> joinTables, @NonNull String field, String value) {
+    public Container<T> like(List<JoinTable> joinTables, String field, String value) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.like(getPath(root, container).get(field), value));
         return container;
     }
 
-    public <Y extends Comparable<? super Y>> Container<T> between(List<JoinTable> joinTables, @NonNull String field, Y from, Y to) {
+    public <Y extends Comparable<? super Y>> Container<T> between(List<JoinTable> joinTables, String field, Y from, Y to) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.between(getPath(root, container).get(field), from, to));
         return container;
     }
 
-    public <Y extends Comparable<? super Y>> Container<T> greaterThan(List<JoinTable> joinTables, @NonNull String field, Y value) {
+    public <Y extends Comparable<? super Y>> Container<T> greaterThan(List<JoinTable> joinTables, String field, Y value) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification(((root, query, cb) -> cb.greaterThan(getPath(root, container).get(field), value)));
         return container;
     }
 
-    public <Y extends Comparable<? super Y>> Container<T> lessThan(List<JoinTable> joinTables, @NonNull String field, Y value) {
+    public <Y extends Comparable<? super Y>> Container<T> lessThan(List<JoinTable> joinTables, String field, Y value) {
+        Assert.isNotNull(field, nullPointer(FIELD));
+
         final Container<T> container = Container.of(joinTables);
         container.setSpecification(((root, query, cb) -> cb.lessThan(getPath(root, container).get(field), value)));
         return container;
