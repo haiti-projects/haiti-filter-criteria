@@ -2,6 +2,7 @@ package dev.struchkov.haiti.filter.criteria;
 
 
 import dev.struchkov.haiti.filter.FilterQuery;
+import dev.struchkov.haiti.utils.Inspector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static dev.struchkov.haiti.utils.Assert.Utils.nullPointer;
-import static dev.struchkov.haiti.utils.Assert.isNotNull;
+import static dev.struchkov.haiti.utils.Inspector.Utils.nullPointer;
 
 public class CriteriaQuery<T> implements FilterQuery {
 
@@ -36,7 +36,7 @@ public class CriteriaQuery<T> implements FilterQuery {
      * @param fieldName Имя поля сущности, которое отвечает за название таблицы.
      */
     public CriteriaQuery<T> join(String... fieldName) {
-        isNotNull(fieldName, nullPointer("fieldName"));
+        Inspector.isNotNull(fieldName, nullPointer("fieldName"));
         joinTables = Arrays.stream(fieldName)
                 .map(JoinTable::of)
                 .collect(Collectors.toList());
@@ -44,14 +44,14 @@ public class CriteriaQuery<T> implements FilterQuery {
     }
 
     public CriteriaQuery<T> join(JoinTable... joinTables) {
-        isNotNull(joinTables, nullPointer("joinTables"));
+        Inspector.isNotNull(joinTables, nullPointer("joinTables"));
         this.joinTables = Arrays.stream(joinTables).collect(Collectors.toList());
         return this;
     }
 
     @Override
     public <Y extends Comparable<? super Y>> FilterQuery between(String field, Y from, Y to) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (from != null && to != null) {
             containers.add(simpleCriteriaQuery.between(joinTables, field, from, to));
         }
@@ -60,7 +60,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public <Y extends Comparable<? super Y>> FilterQuery greaterThan(String field, Y value) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (value != null) {
             containers.add(simpleCriteriaQuery.greaterThan(joinTables, field, value));
         }
@@ -69,7 +69,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public <Y extends Comparable<? super Y>> FilterQuery lessThan(String field, Y value) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (value != null) {
             containers.add(simpleCriteriaQuery.lessThan(joinTables, field, value));
         }
@@ -78,7 +78,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public FilterQuery matchPhrase(String field, Object value) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (value != null) {
             containers.add(simpleCriteriaQuery.matchPhrase(joinTables, field, value));
         }
@@ -87,7 +87,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public <U> FilterQuery matchPhrase(String field, Set<U> values) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (values != null && !values.isEmpty()) {
             containers.addAll(
                     values.stream()
@@ -119,7 +119,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public FilterQuery like(String field, String value, boolean ignoreCase) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         containers.add(
                 ignoreCase
                         ? simpleCriteriaQuery.likeIgnoreCase(joinTables, field, value)
@@ -130,7 +130,7 @@ public class CriteriaQuery<T> implements FilterQuery {
 
     @Override
     public FilterQuery checkBoolInt(String field, Boolean flag) {
-        isNotNull(field, nullPointer(FIELD_NAME));
+        Inspector.isNotNull(field, nullPointer(FIELD_NAME));
         if (flag != null) {
             containers.add(
                     simpleCriteriaQuery.between(joinTables, field, 0, Integer.MAX_VALUE)

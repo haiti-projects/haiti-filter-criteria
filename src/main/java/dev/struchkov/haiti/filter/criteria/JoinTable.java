@@ -1,8 +1,8 @@
 package dev.struchkov.haiti.filter.criteria;
 
-import dev.struchkov.haiti.utils.Assert;
+import dev.struchkov.haiti.utils.Inspector;
 
-import static dev.struchkov.haiti.utils.Assert.Utils.nullPointer;
+import static dev.struchkov.haiti.utils.Inspector.Utils.nullPointer;
 
 /**
  * @author upagge 15.04.2021
@@ -18,12 +18,12 @@ public class JoinTable {
     }
 
     public static JoinTable of(String tableName) {
-        Assert.isNotNull(tableName, nullPointer("tableName"));
+        Inspector.isNotNull(tableName, nullPointer("tableName"));
         return new JoinTable(tableName, JoinTypeOperation.LEFT);
     }
 
     public static JoinTable of(String tableName, JoinTypeOperation joinType) {
-        Assert.isNotNull(tableName, nullPointer("tableName"));
+        Inspector.isNotNull(tableName, nullPointer("tableName"));
         return new JoinTable(tableName, joinType);
     }
 

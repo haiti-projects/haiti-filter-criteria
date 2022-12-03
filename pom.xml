@@ -6,12 +6,12 @@
     <parent>
         <groupId>dev.struchkov.haiti</groupId>
         <artifactId>haiti</artifactId>
-        <version>0.0.4</version>
+        <version>1.4.0</version>
     </parent>
 
     <groupId>dev.struchkov.haiti.filter</groupId>
     <artifactId>haiti-filter-criteria</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 
     <name>Haiti Filter Criteria</name>
     <description>Fast creation of filtering requests using the Criteria Api wrapper.</description>
@@ -28,13 +28,12 @@
     </issueManagement>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <haiti.ver>0.0.4</haiti.ver>
         <google.auto.service.ver>1.0.1</google.auto.service.ver>
 
         <plugin.maven.compiler.ver>3.9.0</plugin.maven.compiler.ver>

@@ -1,6 +1,6 @@
 package dev.struchkov.haiti.filter.criteria;
 
-import dev.struchkov.haiti.utils.Assert;
+import dev.struchkov.haiti.utils.Inspector;
 import org.hibernate.query.criteria.internal.path.PluralAttributeJoinSupport;
 
 import javax.persistence.criteria.From;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static dev.struchkov.haiti.utils.Assert.Utils.nullPointer;
+import static dev.struchkov.haiti.utils.Inspector.Utils.nullPointer;
 
 public class SimpleCriteriaQuery<T> {
 
@@ -26,8 +26,8 @@ public class SimpleCriteriaQuery<T> {
     private final Map<String, From<Object, Object>> joinMap = new HashMap<>();
 
     public Container<T> matchPhrase(List<JoinTable> joinTables, String field, Object value) {
-        Assert.isNotNull(field, nullPointer(FIELD));
-        Assert.isNotNull(value, nullPointer("value"));
+        Inspector.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(value, nullPointer("value"));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.equal(getPath(root, container).get(field), value));
@@ -46,7 +46,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public Container<T> exists(List<JoinTable> joinTables, String field) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.isNotNull(getPath(root, container).get(field)));
@@ -54,7 +54,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public Container<T> likeIgnoreCase(List<JoinTable> joinTables, String field, String value) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.like(cb.lower(getPath(root, container).get(field)), value));
@@ -62,7 +62,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public Container<T> like(List<JoinTable> joinTables, String field, String value) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.like(getPath(root, container).get(field), value));
@@ -70,7 +70,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public <Y extends Comparable<? super Y>> Container<T> between(List<JoinTable> joinTables, String field, Y from, Y to) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification((root, query, cb) -> cb.between(getPath(root, container).get(field), from, to));
@@ -78,7 +78,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public <Y extends Comparable<? super Y>> Container<T> greaterThan(List<JoinTable> joinTables, String field, Y value) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification(((root, query, cb) -> cb.greaterThan(getPath(root, container).get(field), value)));
@@ -86,7 +86,7 @@ public class SimpleCriteriaQuery<T> {
     }
 
     public <Y extends Comparable<? super Y>> Container<T> lessThan(List<JoinTable> joinTables, String field, Y value) {
-        Assert.isNotNull(field, nullPointer(FIELD));
+        Inspector.isNotNull(field, nullPointer(FIELD));
 
         final Container<T> container = Container.of(joinTables);
         container.setSpecification(((root, query, cb) -> cb.lessThan(getPath(root, container).get(field), value)));
